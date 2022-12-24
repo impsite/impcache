@@ -35,8 +35,9 @@ dependencies = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/impsite/impcache"
-Documentation = "https://github.com/impsite/impcache/issues"
+"Homepage" = "https://github.com/impsite/impcache"
+"Documentation" = "https://github.com/impsite/impcache"
+"Bug Tracker" = "https://github.com/impsite/impcache/issues"
 
 [tool.hatch.version]
 path = "src/impcache/__init__.py"
