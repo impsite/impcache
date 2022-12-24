@@ -1,0 +1,76 @@
+name: Release python package
+
+on:
+  release:
+    types: [published]
+
+jobs:
+    build-python-package:
+      runs-on: ubuntu-latest
+      steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Build python package
+        run: make build-python-package
+
+      - name: Archive python package
+        uses: actions/upload-artifact@v3
+        with:
+          name: python-package
+          path: ./dist
+          retention-days: 5
+
+    test-package:
+      needs: build-python-package
+      runs-on: ubuntu-latest
+      services:
+        redis:
+          image: redis:7.0.5-bullseye
+          ports:
+            - 6379:6379
+      steps:
+        - name: Checkout repo
+          uses: actions/checkout@v3
+
+        - name: Download python package
+          uses: actions/download-artifact@v3
+          with:
+            name: python-package
+            path: ./dist
+
+        - name: Set up Python 3.11
+          uses: actions/setup-python@v4
+          with:
+            python-version: '3.11'
+
+        - name: Install dependencies
+          run: |
+            python -m pip install --upgrade pip
+            pip install -r requirements-dev.txt
+
+        - name: Install impcache
+          run: pip install ./dist/*.whl
+
+        - name: Run tests
+          run: pytest -v
+          env:
+            REDIS_DSN: "redis://127.0.0.1:6379/0"
+
+    publish-package-to-pypi:
+      needs: test-package
+      runs-on: ubuntu-latest
+      steps:
+        - name: Checkout repo
+          uses: actions/checkout@v3
+
+        - name: Download python package
+          uses: actions/download-artifact@v3
+          with:
+            name: python-package
+            path: ./dist
+
+        - name: Publish
+          env:
+            PYPI_API_TOKEN: ${{ secrets.PYPI_API_TOKEN }}
+          run: make pypi-publish

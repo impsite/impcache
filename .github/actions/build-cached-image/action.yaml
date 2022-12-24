@@ -1,0 +1,24 @@
+name: "Build image"
+description: "Reusable build image action"
+
+runs:
+  using: "composite"
+  steps:
+
+    - name: Set up Docker BuildX
+      uses: docker/setup-buildx-action@v2
+
+    - name: Cache Docker layers
+      uses: actions/cache@v3
+      with:
+        path: /tmp/.buildx-cache
+        key: ${{ runner.os }}-docker-buildx-${{ github.sha }}
+
+    - name: Build image
+      uses: docker/build-push-action@v3
+      with:
+        file: ./Dockerfile
+        push: false
+        load: true
+        cache-from: type=local,src=/tmp/.buildx-cache
+        cache-to: type=local,dest=/tmp/.buildx-cache

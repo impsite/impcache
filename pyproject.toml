@@ -1,0 +1,48 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "impcache"
+dynamic = ["version"]
+authors = [
+    { name = "Andrew Timonin", email = "timonin.andrew@gmail.com" },
+]
+description = "Simple async cache with high performance. Easy to use & ready for production."
+readme = "README.md"
+license = "MIT"
+requires-python = ">=3.11"
+keywords = ["cache", "asyncio", "cachemanager", "redis"]
+classifiers = [
+    "Intended Audience :: Information Technology",
+    "Intended Audience :: System Administrators",
+    "Intended Audience :: Developers",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Topic :: Internet",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: Software Development :: Libraries",
+    "Topic :: Software Development",
+    "Typing :: Typed",
+    "Framework :: AsyncIO",
+]
+
+dependencies = [
+    "orjson >=3.8.3",
+    "redis[hiredis] >=4.4.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/impsite/impcache"
+Documentation = "https://github.com/impsite/impcache/issues"
+
+[tool.hatch.version]
+path = "src/impcache/__init__.py"
+
+[tool.hatch.build]
+exclude = [
+    ".github",
+    "Makefile",
+]

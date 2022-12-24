@@ -1,0 +1,37 @@
+version: "3.9"
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: "no"
+    volumes:
+      - .:/app
+    depends_on:
+      - "redis"
+    environment:
+      REDIS_DSN: "redis://redis:6379/0"
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  redis:
+    image: "redis:7.0.5-bullseye"
+    command: "redis-server --save 60 1 --loglevel warning"
+    restart: "no"
+    volumes:
+      - redis:/data
+    deploy:
+      resources:
+        limits:
+          memory: 64M
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+volumes:
+  redis:

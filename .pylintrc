@@ -1,0 +1,10 @@
+[MASTER]
+max-line-length=120
+ignored-argument-names=args|kwargs
+extension-pkg-whitelist=orjson
+
+disable=
+    missing-module-docstring,
+    missing-function-docstring,
+    missing-class-docstring,
+    too-few-public-methods,

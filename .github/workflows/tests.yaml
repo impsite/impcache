@@ -1,0 +1,100 @@
+name: Tests
+
+on:
+  push:
+    branches:
+      - "main"
+  pull_request:
+    branches:
+      - "main"
+
+jobs:
+    mypy:
+      runs-on: ubuntu-latest
+      steps:
+        - name: Checkout repo
+          uses: actions/checkout@v3
+
+        - name: Build cached image
+          uses: ./.github/actions/build-cached-image
+
+        - name: Mypy
+          run: make mypy
+
+    flake8:
+      needs: mypy
+      runs-on: ubuntu-latest
+      steps:
+        - name: Checkout repo
+          uses: actions/checkout@v3
+
+        - name: Build cached image
+          uses: ./.github/actions/build-cached-image
+
+        - name: flake8
+          run: make flake8
+
+    pylint:
+      needs: mypy
+      runs-on: ubuntu-latest
+      steps:
+        - name: Checkout repo
+          uses: actions/checkout@v3
+
+        - name: Build cached image
+          uses: ./.github/actions/build-cached-image
+
+        - name: pylint
+          run: make pylint
+
+    black:
+      needs: mypy
+      runs-on: ubuntu-latest
+      steps:
+        - name: Checkout repo
+          uses: actions/checkout@v3
+
+        - name: Build cached image
+          uses: ./.github/actions/build-cached-image
+
+        - name: black
+          run: make black-check
+
+    tests:
+      needs: [flake8, pylint, black]
+      runs-on: ubuntu-latest
+      steps:
+        - name: Checkout repo
+          uses: actions/checkout@v3
+
+        - name: Build cached image
+          uses: ./.github/actions/build-cached-image
+
+        - name: Tests
+          run: make test
+
+        - name: Archive code coverage results
+          uses: actions/upload-artifact@v3
+          with:
+            name: code-coverage-db
+            path: ./.coverage
+            retention-days: 1
+
+    coverage:
+      needs: tests
+      runs-on: ubuntu-latest
+      steps:
+        - name: Checkout repo
+          uses: actions/checkout@v3
+
+        - name: Build cached image
+          uses: ./.github/actions/build-cached-image
+
+        - name: Download code coverage results
+          uses: actions/download-artifact@v3
+          with:
+            name: code-coverage-db
+            path: .
+
+        - name: Coverage
+          run: make coverage
