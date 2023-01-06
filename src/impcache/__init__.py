@@ -1,6 +1,6 @@
 """Simple async cache with high performance. Easy to use & ready for production."""
 
-__version__ = "1.0.1"
+__version__ = "1.0.2"
 
 from .exceptions import CacheError, JsonEncodeError, JsonDecodeError
 from .repository import RedisCacheRepository
