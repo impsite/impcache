@@ -202,9 +202,9 @@ See the [FastAPI dependencies](https://fastapi.tiangolo.com/async/#dependencies)
 
 depencies.py:
 ```python
-from impcache import Cache, ICache, RedisCacheRepository
+from impcache import Cache, RedisCacheRepository
 
-async def cache_dependency() -> ICache:
+async def cache_dependency() -> Cache:
     return Cache(
         repository=RedisCacheRepository(dsn="redis://redis:6379/0"),
         key_prefix="cache",
